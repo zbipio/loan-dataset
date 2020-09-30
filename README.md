@@ -2,10 +2,11 @@
 The main purpose of this repository is to focus more on code organization and test some additional functionalities, both related and not related to Machine Learning.<br> 
 Hence we will use only a few columns for the predicting purposes. 
 Planned functionalities:
-- implementing hyperopt
-- using dash to present data (+ as an iterface for model training)
-- logging
-- error and exception handling
+- implementing CV (DONE)
+- implementing hyperopt (DONE)
+- logging (DONE)
+- error and exception handling (partially)
+- using dash to present data (+ as an iterface for model training) (in progress)
 - using distributed computing
 
 We will use the [lending-club dataset](https://www.kaggle.com/wordsforthewise/lending-club), specifically the **accepted** loans since for those we have the `loan_status` which will be the base for our target variable.

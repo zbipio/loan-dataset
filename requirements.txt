@@ -1,3 +1,9 @@
-numpy
-pandas
-scikit-learn
+numpy>=1.19.2
+pandas>=1.1.2
+scikit-learn>=0.23.2
+matplotlib>=3.3.2
+seaborn>=0.11.0
+eli5>=0.10.1
+hyperopt>=0.2.4
+xgboost>=1.2.0
+lightgbm>=3.0.0
