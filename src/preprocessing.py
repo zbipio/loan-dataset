@@ -1,26 +1,31 @@
 import gc
-import os
+from pathlib import Path
+
+from typing import (
+    Dict,
+    List,
+    Tuple,
+)
 
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from logger_function import (
+from logger import (
     log_and_stop,
     LOAN_LOGGER,
 )
 
 
-def read_csv_file(file, usecols):
+def read_csv_file(file: str, usecols: List[str]) -> pd.DataFrame:
     """
-    Read the specified file consisting loan data.
+    Read the specified file consisting loan data with specified usecols.
     Columns issue_d and earliest_cr_line are parsed as datetime.
     Numerical columns have explicitly specified dtypes for memory optimization.
     Function returns a read file.
     """
     try:
-        HOME_PATH = os.getcwd()
-        file_path = os.path.join(HOME_PATH, file)
+        file_path = Path(__file__).parents[0].absolute() / 'data' / file
 
         read_file = pd.read_csv(file_path,
                                 usecols=usecols,
@@ -34,7 +39,7 @@ def read_csv_file(file, usecols):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def drop_rows_with_nans(dataset):
+def drop_rows_with_nans(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Drop rows which contain NaN in one of the 3 columns: `annual_inc`, `earliest_cr_line`, 'pub_rec_bankruptcies'.
     Function returns a new dataset with removed NaN rows.
@@ -50,7 +55,7 @@ def drop_rows_with_nans(dataset):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def create_target_variable(dataset):
+def create_target_variable(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Create the column bad_loan which is True if loan_status has any of the following values:
     `Charged Off`, `Late (31-120 days)`, 'Late (16-30 days)',
@@ -72,7 +77,7 @@ def create_target_variable(dataset):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def extract_number_from_text(dataset):
+def extract_number_from_text(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Extract the number of months from the term column
     and the digit from the sub_grade column.
@@ -90,7 +95,7 @@ def extract_number_from_text(dataset):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def create_date_features(dataset):
+def create_date_features(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Create features based on datetime columns: issue_d, earliest_cr_line.
     Function returns a new dataset with new features.
@@ -110,20 +115,7 @@ def create_date_features(dataset):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def _calculate_loan(interest_rate, installment, months):
-    """
-    Calculate the funded loan.
-    Assumptions made:
-     - installment column includes interest
-     - interest rate is fixed
-     - interest is the only cost added to the installment
-     - interest is added at the end of the period
-    Function returns a vector with the calculated loan.
-    """
-    return np.pv(interest_rate / 100, months / 12, -installment * 12, 1)
-
-
-def create_log_features(dataset):
+def create_log_features(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the logarithms for skewed the column annual_inc.
     Function returns a dataset with new features.
@@ -139,7 +131,7 @@ def create_log_features(dataset):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def create_factorizing_dict(dataset, cat_feats):
+def create_factorizing_dict(dataset: pd.DataFrame, cat_feats: List[str]) -> Dict:
     """
     Create a dictionary which contains all label-number relations for the given categorical variables.
     Function returns the created dictionary.
@@ -157,7 +149,7 @@ def create_factorizing_dict(dataset, cat_feats):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def factorize_categorical_features(dataset, factorized_dict):
+def factorize_categorical_features(dataset: pd.DataFrame, factorized_dict: Dict) -> pd.DataFrame:
     """
     Changing all categorical variables into numerical variables based on the given factorized dictionary.
     Function returns a new dataset where factorized columns end with `_cat`.
@@ -175,7 +167,7 @@ def factorize_categorical_features(dataset, factorized_dict):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def optimize_dtypes(dataset, dtype_cols):
+def optimize_dtypes(dataset: pd.DataFrame, dtype_cols) -> pd.DataFrame:
     """
     Optimize the dtype for the given set of columns in order to use less memory.
     Additionally garbage collection is run.
@@ -195,7 +187,7 @@ def optimize_dtypes(dataset, dtype_cols):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def prepare_train_test_sets(features, target):
+def prepare_train_test_sets(features, target) -> Tuple:
     """
     Change the DataFrame and Series into numpy arrays and divide the data into a training and test set.
     Test set will consist 20% of observations.
@@ -213,7 +205,7 @@ def prepare_train_test_sets(features, target):
         log_and_stop(LOAN_LOGGER, message)
 
 
-def preprocess_data(file):
+def preprocess_data(file: str) -> pd.DataFrame:
     """
     Read the loan file and preprocess all data.
     Useful function to minimize visible code e.g. for visualization purposes.

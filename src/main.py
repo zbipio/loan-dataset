@@ -1,16 +1,16 @@
 import numpy as np
 
-from model_functions import (
+from model import (
     run_cv,
     train_and_test_model,
 )
 
-from parameter_functions import (
+from parameter import (
     get_model_params,
     AVAILABLE_MODELS,
 )
 
-from preprocessing_functions import (
+from preprocessing import (
     read_csv_file,
     drop_rows_with_nans,
     create_target_variable,

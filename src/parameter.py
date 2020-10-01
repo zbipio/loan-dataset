@@ -6,7 +6,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
-from logger_function import (
+from logger import (
     log_and_stop,
     LOAN_LOGGER,
 )

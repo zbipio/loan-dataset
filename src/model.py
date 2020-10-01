@@ -1,15 +1,17 @@
 import numpy as np
 
+from typing import Tuple
+
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 
-from logger_function import (
+from logger import (
     log_and_stop,
     LOAN_LOGGER,
 )
 
 
-def run_cv(model, X, y, folds=3, cv_type=StratifiedKFold, success_metric=roc_auc_score):
+def run_cv(model, X, y, folds=3, cv_type=StratifiedKFold, success_metric=roc_auc_score) -> Tuple:
     """
     Run the specified cross validation on the given model using the given X, y.
     Returns a tuple where:
